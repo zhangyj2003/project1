@@ -86,8 +86,8 @@ void gtthread_scheduler() {
 	} else if (current_thread_ptr->finished == 1) {
 		current_thread_ptr=steque_pop(&g_thread_queue);  //Remove the finished thread from the queue
 		// free the resources
-		free(current_thread_ptr->context.uc_stack.ss_sp);
-		free(current_thread_ptr);
+		//free(current_thread_ptr->context.uc_stack.ss_sp);
+		//free(current_thread_ptr);
 
 		gtthread_t *next_thread_ptr = (gtthread_t *) steque_front(&g_thread_queue);
 
@@ -232,7 +232,7 @@ int gtthread_join(gtthread_t thread, void **status) {
 			//             printf("% The thread to be compared with %d\n",thread.id);
 			if (current_thread_ptr->id == thread.id) {
 
-				if (current_thread_ptr->ret != NULL ) {
+				if ((current_thread_ptr->ret != NULL ) && (status!=NULL)){
 					*status = current_thread_ptr->ret;
 				} else {
 					status = NULL;
@@ -240,7 +240,7 @@ int gtthread_join(gtthread_t thread, void **status) {
 				is_jointed = 1;
 				current_thread_ptr=(gtthread_finished_t *)steque_pop(&g_thread_finished_queue);  // remove the thread from the queue
 				// TODO freee the resource!!
-				free(current_thread_ptr);
+				//free(current_thread_ptr);
 				break;
 
 			}
@@ -300,7 +300,7 @@ void gtthread_exit(void* retval) {
 /*
  The gtthread_yield() function is analogous to pthread_yield, causing
  the calling thread to relinquish the cpu and place itself at the
- back of the schedule queue.sigProcMask
+ back of the schedule queue.
  */
 void gtthread_yield(void) {
 
@@ -315,9 +315,9 @@ void gtthread_yield(void) {
 int gtthread_equal(gtthread_t t1, gtthread_t t2) {
 
 	if (t1.id == t2.id) {
-		return 0;
-	} else {
 		return 1;
+	} else {
+		return 0;
 	}
 
 }
